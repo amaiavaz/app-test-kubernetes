@@ -24,7 +24,7 @@ steps:
     containerRegistry: 'sc-ado-docker-lab'
     tags: |
       $(Build.BuildId)
-      latest   # 👈 este es el que faltaba
+      latest
 
 # 3. Deploy a Kubernetes (igual que tenías)
 - task: AzureCLI@2
