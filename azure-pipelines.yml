@@ -27,16 +27,27 @@ steps:
       $(Build.BuildId)
 
 # ---- Esta es la tarea para desplegar kubernetes, puedes ignorarla esta fuera de tu scope
-- task: KubernetesManifest@1
-  displayName: Deploy to AKS
+- task: AzureCLI@2
+  displayName: "Deploy manifests to AKS"
   inputs:
-    action: deploy
-    connectionType: 'Azure Resource Manager'
-    azureSubscriptionConnection: 'sc-ado-wif-lab' 
-    azureResourceGroup: 'rg-aks-lab'
-    kubernetesCluster: 'labaks'
-    namespace: 'default'
-    manifests: |
-      **/deployment.yaml
-    containers: |
-      labacrtestamaia1238273.azurecr.io/react-hello-world:$(Build.BuildId)
+    azureSubscription: sc-ado-wif-lab   # 👉 tu Service Connection que ya tienes creada
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "🔑 Obteniendo credenciales del cluster..."
+      az aks get-credentials \
+        --resource-group rg-aks-lab \
+        --name labaks \
+        --overwrite-existing \
+        --file .kubeconfig-labaks
+
+      export KUBECONFIG=.kubeconfig-labaks
+
+      echo "Ajustando login con kubelogin..."
+      kubelogin convert-kubeconfig -l azurecli
+
+      echo "Deployando manifests..."
+      kubectl apply -f deployment.yaml -n default
+
+      echo "Despliegue completado"
+
