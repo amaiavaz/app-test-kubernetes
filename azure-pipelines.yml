@@ -32,7 +32,7 @@ steps:
   inputs:
     action: deploy
     connectionType: 'Azure Resource Manager'
-    azureSubscriptionConnection: 'sc-ado-wif-lab' 
+    azureSubscriptionConnection: 'sc-ado-aks-lab' 
     azureResourceGroup: 'rg-aks-lab'
     kubernetesCluster: 'labaks'
     namespace: 'default'
