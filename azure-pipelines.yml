@@ -2,9 +2,8 @@
 trigger:
 - main
 
-# --- Es el agente que  he creado especialmente, por defecto oi muchas veces el el self-hosted que copiaste, pero no ahora, esto es más de infra, ya te lo dirán ellos
 pool:
-  name: ado-lab-pool   # 👈 tu pool self-hosted
+  name: ado-lab-pool
   demands: agent.name -equals ado-agent-vm
 
 steps:
@@ -15,7 +14,7 @@ steps:
     command: login
     containerRegistry: 'sc-ado-docker-lab'
 
-## Aquí hago el buil y el push
+# 2. Build y Push con dos tags: BuildId + latest
 - task: Docker@2
   displayName: Build and Push Image
   inputs:
@@ -25,8 +24,9 @@ steps:
     containerRegistry: 'sc-ado-docker-lab'
     tags: |
       $(Build.BuildId)
+      latest   # 👈 este es el que faltaba
 
-# ---- Esta es la tarea para desplegar kubernetes, puedes ignorarla esta fuera de tu scope
+# 3. Deploy a Kubernetes (igual que tenías)
 - task: AzureCLI@2
   displayName: "Install kubectl + kubelogin locally"
   inputs:
