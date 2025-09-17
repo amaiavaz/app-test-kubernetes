@@ -11,7 +11,7 @@ steps:
   displayName: Login to ACR
   inputs:
     command: login
-    containerRegistry: 'sc-ado-wif-lab'
+    containerRegistry: 'c-ado-docker-lab'
 
 ## Aquí hago el buil y el push
 - task: Docker@2
@@ -20,7 +20,7 @@ steps:
     command: buildAndPush
     repository: react-hello-world
     dockerfile: '**/Dockerfile'
-    containerRegistry: 'sc-ado-wif-lab'
+    containerRegistry: 'sc-ado-docker-lab'
     tags: |
       $(Build.BuildId)
 
