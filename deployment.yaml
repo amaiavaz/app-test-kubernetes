@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-hello-world
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: react-hello-world
+  template:
+    metadata:
+      labels:
+        app: react-hello-world
+    spec:
+      containers:
+      - name: react-hello-world
+        image: labacrtestamaia1238273.azurecr.io/react-hello-world:latest
+        ports:
+        - containerPort: 80

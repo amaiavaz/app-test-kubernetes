@@ -11,7 +11,7 @@ steps:
   displayName: Login to ACR
   inputs:
     command: login
-    containerRegistry: # pendiente que me de el valor mario 
+    containerRegistry: 'sc-acr-lab'
 
 ## Aquí hago el buil y el push
 - task: Docker@2
@@ -24,3 +24,17 @@ steps:
     tags: |
       $(Build.BuildId)
 
+# ---- Esta es la tarea para desplegar kubernetes, puedes ignorarla esta fuera de tu scope
+- task: KubernetesManifest@1
+  displayName: Deploy to AKS
+  inputs:
+    action: deploy
+    connectionType: 'Azure Resource Manager'
+    azureSubscriptionConnection: 'sc-acr-lab' 
+    azureResourceGroup: 'rg-aks-lab'
+    kubernetesCluster: 'labaks'
+    namespace: 'default'
+    manifests: |
+      **/deployment.yaml
+    containers: |
+      labacrtestamaia1238273.azurecr.io/react-hello-world:$(Build.BuildId)
