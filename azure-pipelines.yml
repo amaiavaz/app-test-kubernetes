@@ -1,9 +1,11 @@
 ## auto en main para pruebas así más agilidad
 trigger:
 - main
-## siempre por defecto ubuntu
+
+# --- Es el agente que  he creado especialmente, por defecto oi muchas veces el el self-hosted que copiaste, pero no ahora, esto es más de infra, ya te lo dirán ellos
 pool:
-  vmImage: 'ubuntu-latest'
+  name: ado-lab-pool   # 👈 tu pool self-hosted
+  demands: agent.name -equals ado-agent-vm
 
 steps:
 # 1. Login en ACR
