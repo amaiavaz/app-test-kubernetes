@@ -28,27 +28,26 @@ steps:
 
 # ---- Esta es la tarea para desplegar kubernetes, puedes ignorarla esta fuera de tu scope
 - task: AzureCLI@2
-  displayName: "Deploy manifests to AKS"
+  displayName: "Install kubectl + kubelogin locally"
   inputs:
     azureSubscription: sc-ado-wif-lab
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      echo "Instalando kubectl y kubelogin..."
-      az aks install-cli
+      echo "📦 Instalando kubectl y kubelogin en ~/bin..."
+      mkdir -p $HOME/bin
+      curl -sSL -o $HOME/bin/kubelogin.zip https://github.com/Azure/kubelogin/releases/download/v0.2.10/kubelogin.zip
+      unzip -o $HOME/bin/kubelogin.zip -d $HOME/bin/
+      mv $HOME/bin/bin/linux_amd64/kubelogin $HOME/bin/kubelogin
+      chmod +x $HOME/bin/kubelogin
+      export PATH=$HOME/bin:$PATH
 
-      echo "🔑 Obteniendo credenciales del cluster..."
-      az aks get-credentials \
-        --resource-group rg-aks-lab \
-        --name labaks \
-        --overwrite-existing \
-        --file .kubeconfig-labaks
-
+      echo "🔑 Obteniendo credenciales..."
+      az aks get-credentials --resource-group rg-aks-lab --name labaks --overwrite-existing --file .kubeconfig-labaks
       export KUBECONFIG=.kubeconfig-labaks
 
-      echo "Ajustando login con kubelogin..."
+      echo "🔄 Ajustando login..."
       kubelogin convert-kubeconfig -l azurecli
 
-      echo "Deployando manifests..."
+      echo "📦 Deployando..."
       kubectl apply -f deployment.yaml -n default --validate=false
-
