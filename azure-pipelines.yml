@@ -11,7 +11,7 @@ steps:
   displayName: Login to ACR
   inputs:
     command: login
-    containerRegistry: 'c-ado-docker-lab'
+    containerRegistry: 'sc-ado-docker-lab'
 
 ## Aquí hago el buil y el push
 - task: Docker@2
