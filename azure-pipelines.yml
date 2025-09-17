@@ -30,10 +30,13 @@ steps:
 - task: AzureCLI@2
   displayName: "Deploy manifests to AKS"
   inputs:
-    azureSubscription: sc-ado-wif-lab   # 👉 tu Service Connection que ya tienes creada
+    azureSubscription: sc-ado-wif-lab
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
+      echo "Instalando kubectl y kubelogin..."
+      az aks install-cli
+
       echo "🔑 Obteniendo credenciales del cluster..."
       az aks get-credentials \
         --resource-group rg-aks-lab \
@@ -47,7 +50,5 @@ steps:
       kubelogin convert-kubeconfig -l azurecli
 
       echo "Deployando manifests..."
-      kubectl apply -f deployment.yaml -n default
-
-      echo "Despliegue completado"
+      kubectl apply -f deployment.yaml -n default --validate=false
 
